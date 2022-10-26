@@ -1,0 +1,44 @@
+{
+  "name": "api.newtontrades.com",
+  "version": "1.0.0",
+  "description": "This is backend Node API for NewtonTrades.com",
+  "main": "compress.js",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.51.0",
+    "@aws-sdk/credential-provider-node": "^3.51.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "bcrypt": "^5.0.1",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.4",
+    "mongoose-beautiful-unique-validation": "^7.1.1",
+    "nodemailer": "^6.7.2"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaqatSaeed/API.NewtonTrades.com.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LiaqatSaeed/API.NewtonTrades.com/issues"
+  },
+  "homepage": "https://github.com/LiaqatSaeed/API.NewtonTrades.com#readme"
+}

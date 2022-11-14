@@ -25,10 +25,11 @@ export const manageHistory = async (req, res) => {
 
   // get Previous Record ID to delete
 
+  const { account } = req.live_balance_obj;
   // Empty Table
   await LiveBalance.deleteMany({
     created_date: { $gte: today, $lte: nextDay },
-    account: req.params.account,
+    account
   });
 
   // Save New Record

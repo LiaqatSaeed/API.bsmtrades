@@ -84,7 +84,7 @@ var routes = () => {
     try {
       let { query } = req;
       
-      if (query.account_user_name === "all") {
+      if (query.account === "all") {
         query = {};
       }
 

@@ -5,7 +5,7 @@ import lowerCase from 'lodash/lowerCase';
 import replace from 'lodash/replace';
 import split from 'lodash/split';
 import trim from 'lodash/trim';
-import { manageHistory } from '../Business';
+import { manageHistory, recordHistory } from '../Business';
 import { authError, DBConnection, mongoose, removeEmpty } from '../middleware';
 import LiveBalance from '../Model/LiveBalances';
 
@@ -52,20 +52,55 @@ var routes = () => {
     manageHistory
   );
 
+  router.post(
+    '/:account',
+    async (req, res, next) => {
+      try {
+        const { message, subject } = req.body;
+
+        let liveBalanceObj = {};
+
+        split(message, '\n').map((item) => {
+          let ObjectKeyPair = split(item, ' : ');
+          let keyType = replace(lowerCase(ObjectKeyPair[0]), ' ', '_');
+
+          liveBalanceObj[keyType] = trim(ObjectKeyPair[1]);
+
+          return item;
+        });
+
+        req.live_balance_obj = liveBalanceObj;
+
+         next();
+      } catch (error) {
+        res.status(500).send(error);
+      }
+    },
+     manageHistory
+  );
+
   //: GET ALL
   router.get('/', async (req, res) => {
     try {
-      const { query } = req;
+      let { query } = req;
+      
+      if (query.account_user_name === "all") {
+        query = {};
+      }
 
+console.log(req.query)
       LiveBalance.find(query, function (err, live_balances) {
-        const balance = head(live_balances)
-        res.send({ data: balance });
+       // const balance = head(live_balances)
+        res.send({ data: live_balances });
       });
     } catch (error) {
       console.log(error);
       res.status(500).send({ error });
     }
   });
+
+  //: GET ALL
+  router.get('/test-history', recordHistory);
 
   // Get Closed
   router.get('/', async (req, res) => {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-import { sortBy } from 'lodash';
+import { isNil, sortBy, filter,map, size } from 'lodash';
 import first from 'lodash/first';
 import { sendRegistrationEmailTo } from '../Business/settingsBLL';
 import {
@@ -179,14 +179,26 @@ const getUserPermissions = async (req, res) => {
 
     //role
     if (role === 'SuperAdmin' || all_page_access === true) {
-      pages = await Pages.find({});
+      pages = await Pages.find({}).lean().exec();
     }
     role = role === 'SuperAdmin' ? undefined : role;
     let response = {
       userData: { first_name, last_name, role, active_until },
     };
 
-    pages = sortBy(pages, "value");
+
+    let pageWithSubMenus = filter(map(pages, item => {
+
+      let content = sortBy(filter(pages, subItem => subItem.parent_id === item.value),"value");
+     if(size(content)> 0) {
+       item.content = content;
+     }
+
+      return item;
+    }), item => isNil(item.parent_id))
+
+    pages = sortBy(pageWithSubMenus, "value");
+
 
     response.token = await getJwtoken({
       userData: { _id, role, permission_id, active_until },

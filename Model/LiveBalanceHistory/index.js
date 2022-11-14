@@ -10,6 +10,7 @@ const Schema = mongoose.Schema;
 const liveBalanceHistory = new Schema({
   balance: { type: Number },
   equity: { type: Number },
+  account: { type: String },
   created_date: { type: Date, default: Date.now },
 });
 

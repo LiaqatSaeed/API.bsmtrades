@@ -1,13 +1,15 @@
 var express = require('express');
 var router = express.Router();
-import head from "lodash/head";
+import find from "lodash/find";
 import lowerCase from 'lodash/lowerCase';
 import replace from 'lodash/replace';
 import split from 'lodash/split';
+import map from "lodash/map";
 import trim from 'lodash/trim';
 import { manageHistory, recordHistory } from '../Business';
 import { authError, DBConnection, mongoose, removeEmpty } from '../middleware';
 import LiveBalance from '../Model/LiveBalances';
+import accounts from "../Constants/accounts.json"
 
 router.use(DBConnection, authError);
 router.use(removeEmpty);
@@ -90,7 +92,15 @@ var routes = () => {
 
 console.log(req.query)
       LiveBalance.find(query, function (err, live_balances) {
-       // const balance = head(live_balances)
+
+        live_balances = map(live_balances, item => {
+          const account = find(accounts, (accountItem) => accountItem.account === item.account);
+          return {
+            ...item._doc,
+            account_name: account.name
+          }
+        })
+
         res.send({ data: live_balances });
       });
     } catch (error) {

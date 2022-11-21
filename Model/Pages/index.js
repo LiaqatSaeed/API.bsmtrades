@@ -10,7 +10,12 @@ const pages = new Schema({
   value: { type: String },
   icon: { type: String },
   label: { type: String },
-  to: { type: String },
+  to: {
+    pathname: { type: String },
+    state: {
+      account: { type: String },
+    }
+  },
 });
 
 //testData is my Collection Name

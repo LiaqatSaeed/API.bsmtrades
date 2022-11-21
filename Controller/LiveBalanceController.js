@@ -5,6 +5,7 @@ import lowerCase from 'lodash/lowerCase';
 import replace from 'lodash/replace';
 import split from 'lodash/split';
 import map from "lodash/map";
+import reduce from "lodash/reduce"
 import trim from 'lodash/trim';
 import { manageHistory, recordHistory } from '../Business';
 import { authError, DBConnection, mongoose, removeEmpty } from '../middleware';
@@ -85,13 +86,14 @@ var routes = () => {
   router.get('/', async (req, res) => {
     try {
       let { query } = req;
-      
-      if (query.account === "all") {
-        query = {};
+      let dbQuery = query;
+
+      if (dbQuery.account === "all") {
+        dbQuery = {};
       }
 
 console.log(req.query)
-      LiveBalance.find(query, function (err, live_balances) {
+      LiveBalance.find(dbQuery, function (err, live_balances) {
 
         live_balances = map(live_balances, item => {
           const account = find(accounts, (accountItem) => accountItem.account === item.account);
@@ -100,6 +102,23 @@ console.log(req.query)
             account_name: account.name
           }
         })
+
+        if (query.account === "all") {
+
+          const balance = reduce(map(live_balances, ({ balance }) => balance), (prev, curr) => prev + curr);
+          const equity = reduce(map(live_balances, ({ equity }) => equity), (prev, curr) => prev + curr);
+          const account_name = "All";
+          const account = "all";
+          live_balances = [
+            {
+              balance,
+              equity,
+              account_name,
+              account
+            },
+            ...live_balances
+          ]
+        }
 
         res.send({ data: live_balances });
       });

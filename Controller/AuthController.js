@@ -203,7 +203,7 @@ const getUserPermissions = async (req, res) => {
     response.token = await getJwtoken({
       userData: { _id, role, permission_id, active_until },
     });
-    response.permissions = [{ pages:pages[0] }];
+    response.permissions = [{ pages:pages }];
     res.json(response);
   } catch (error) {
     res.status(500).send(error);

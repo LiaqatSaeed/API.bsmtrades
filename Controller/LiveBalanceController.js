@@ -92,7 +92,7 @@ var routes = () => {
         dbQuery = {};
       }
       else{
-        const account = find(accounts, (item => item.url === dbQuery.account))
+        const {account} = find(accounts, (item => item.url === dbQuery.account))
         dbQuery={account}
       }
 

@@ -91,6 +91,10 @@ var routes = () => {
       if (dbQuery.account === "all") {
         dbQuery = {};
       }
+      else{
+        const account = find(accounts, (item => item.account === dbQuery.account))
+        dbQuery={account}
+      }
 
 console.log(req.query)
       LiveBalance.find(dbQuery, function (err, live_balances) {

@@ -37,6 +37,8 @@ var routes = () => {
 
         let liveBalanceObj = {};
 
+        console.log('message', message);
+
         split(message, '\n').map((item) => {
           let ObjectKeyPair = split(item, ' : ');
           let keyType = replace(lowerCase(ObjectKeyPair[0]), ' ', '_');

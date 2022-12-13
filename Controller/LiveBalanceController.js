@@ -37,7 +37,7 @@ var routes = () => {
 
         let liveBalanceObj = {};
 
-        console.log('message', message);
+        console.log('message', req.body);
 
         split(message, '\n').map((item) => {
           let ObjectKeyPair = split(item, ' : ');

@@ -88,6 +88,18 @@ var routes = () => {
       let { query } = req;
       let dbQuery = query;
 
+
+      let today = new Date();
+
+      today.setDate(today.getDate());
+      //
+      today = today.toLocaleDateString() + ' 00:00';
+      today = new Date(today);
+      let nextDay = new Date(today);
+      nextDay.setDate(nextDay.getDate());
+      nextDay = nextDay.toLocaleDateString() + ' 24:00';
+      nextDay = new Date(nextDay);
+
       if (dbQuery.account === "all") {
         dbQuery = {};
       }
@@ -95,6 +107,12 @@ var routes = () => {
         const {account} = find(accounts, (item => item.url === dbQuery.account))
         dbQuery={account}
       }
+
+      dbQuery = {
+        ...dbQuery,
+       
+      }
+     // created_date: { created_date: { $gte: today, $lte: nextDay } }
 
 console.log(req.query)
       LiveBalance.find(dbQuery, function (err, live_balances) {

@@ -3,16 +3,16 @@ import LiveBalanceHistory from '../Model/LiveBalanceHistory';
 
 export const manageHistory = async (req, res) => {
   //
-  // let today = new Date();
+  let today = new Date();
 
-  // today.setDate(today.getDate());
-  // //
-  // today = today.toDateString() + ', 00:00';
-  // today = new Date(today);
-  // let nextDay = new Date(today);
-  // nextDay.setDate(nextDay.getDate());
-  // nextDay = nextDay.toDateString() + ', 24:00';
-  // nextDay = new Date(nextDay);
+  today.setDate(today.getDate());
+  //
+  today = today.toDateString() + ', 00:00';
+  today = new Date(today);
+  let nextDay = new Date(today);
+  nextDay.setDate(nextDay.getDate());
+  nextDay = nextDay.toDateString() + ', 24:00';
+  nextDay = new Date(nextDay);
 
 
 
@@ -22,7 +22,7 @@ export const manageHistory = async (req, res) => {
 
   // Empty Table
   await LiveBalance.deleteMany({
-    
+    created_date: {$gte : today, $lt: nextDay},
     account
   });
 

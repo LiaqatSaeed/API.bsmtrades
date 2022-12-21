@@ -1,16 +1,17 @@
 var express = require('express');
 var router = express.Router();
-import find from "lodash/find";
+import find from 'lodash/find';
 import lowerCase from 'lodash/lowerCase';
 import replace from 'lodash/replace';
 import split from 'lodash/split';
-import map from "lodash/map";
-import reduce from "lodash/reduce"
+import map from 'lodash/map';
+import reduce from 'lodash/reduce';
 import trim from 'lodash/trim';
 import { manageHistory, recordHistory } from '../Business';
 import { authError, DBConnection, mongoose, removeEmpty } from '../middleware';
 import LiveBalance from '../Model/LiveBalances';
-import accounts from "../Constants/accounts.json"
+import accounts from '../Constants/accounts.json';
+import { isNaN, sortBy } from 'lodash';
 
 router.use(DBConnection, authError);
 router.use(removeEmpty);
@@ -76,12 +77,12 @@ var routes = () => {
 
         req.live_balance_obj = liveBalanceObj;
 
-         next();
+        next();
       } catch (error) {
         res.status(500).send(error);
       }
     },
-     manageHistory
+    manageHistory
   );
 
   //: GET ALL
@@ -89,7 +90,6 @@ var routes = () => {
     try {
       let { query } = req;
       let dbQuery = query;
-
 
       let today = new Date();
 
@@ -102,47 +102,67 @@ var routes = () => {
       nextDay = nextDay.toDateString() + ', 24:00';
       nextDay = new Date(nextDay);
 
-      if (dbQuery.account === "all") {
+      if (dbQuery.account === 'all') {
         dbQuery = {};
-      }
-      else{
-        const {account} = find(accounts, (item => item.url === dbQuery.account))
-        dbQuery={account}
+      } else {
+        const { account } = find(
+          accounts,
+          (item) => item.url === dbQuery.account
+        );
+        dbQuery = { account };
       }
 
       dbQuery = {
         ...dbQuery,
-       
-      }
-     // created_date: { created_date: { $gte: today, $lte: nextDay } }
+        created_date: { $gte: today, $lte: nextDay },
+      };
+      //
 
-console.log(req.query)
+      console.log(req.query);
       LiveBalance.find(dbQuery, function (err, live_balances) {
-
-        live_balances = map(live_balances, item => {
-          const account = find(accounts, (accountItem) => accountItem.account === item.account);
+        live_balances = map(live_balances, (item) => {
+          const account = find(
+            accounts,
+            (accountItem) => accountItem.account === item.account
+          );
           return {
             ...item._doc,
-            account_name: account.name
-          }
-        })
+            account_name: account.name,
+          };
+        });
 
-        if (query.account === "all") {
-
-          const balance = reduce(map(live_balances, ({ balance }) => balance), (prev, curr) => prev + curr);
-          const equity = reduce(map(live_balances, ({ equity }) => equity), (prev, curr) => prev + curr);
-          const account_name = "All";
-          const account = "all";
+        if (query.account === 'all') {
+          const balance = reduce(
+            map(live_balances, ({ balance }) => balance),
+            (prev, curr) => prev + curr
+          );
+          const equity = reduce(
+            map(live_balances, ({ equity }) => equity),
+            (prev, curr) => prev + curr
+          );
+          const account_name = 'All';
+          const account = 'all';
           live_balances = [
             {
               balance,
               equity,
               account_name,
-              account
+              account,
             },
-            ...live_balances
-          ]
+            ...live_balances,
+          ];
         }
+
+        live_balances = map(live_balances, (item) => {
+          let account =   parseInt(item.account);
+          account = isNaN(account) ? -1 : account;
+          return {
+            ...item,
+            account,
+          };
+        });
+
+        live_balances = sortBy(live_balances, 'account', 'asc');
 
         res.send({ data: live_balances });
       });

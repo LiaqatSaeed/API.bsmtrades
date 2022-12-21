@@ -43,11 +43,11 @@ export const recordHistory = async (req, res) => {
 
     today.setDate(today.getDate());
 
-    today = today.toLocaleDateString() + ' 00:00';
+    today = today.toDateString() + ' 00:00';
     today = new Date(today);
     let nextDay = new Date(today);
     nextDay.setDate(nextDay.getDate());
-    nextDay = nextDay.toLocaleDateString() + ' 24:00';
+    nextDay = nextDay.toDateString() + ' 24:00';
     nextDay = new Date(nextDay);
 
     today.setDate(today.getDate());

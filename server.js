@@ -39,6 +39,7 @@ var liveBalanceController = require('./Controller/LiveBalanceController.js')();
 var liveBalanceHistoryController =
   require('./Controller/LiveBalanceHistoryController.js')();
 var liveTradeController = require('./Controller/LiveTradeController.js')();
+var PagesController = require('./Controller/PagesController')();
 
 app.use('/api', authController);
 app.use('/api/users', userController);
@@ -49,6 +50,7 @@ app.use('/api/trade-queue', tradeQueueController);
 app.use('/api/live-trade', liveTradeController);
 app.use('/api/live-balance', liveBalanceController);
 app.use('/api/live-balance-history', liveBalanceHistoryController);
+app.use('/api/user-accounts', PagesController);
 
 const server = require('http').createServer(app);
 

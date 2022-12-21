@@ -7,9 +7,10 @@ import { mongoose } from '../../middleware';
 //Lets Go back to Controller
 const Schema = mongoose.Schema;
 const pages = new Schema({
-  value: { type: String },
+  value: { type: Number },
   icon: { type: String },
   label: { type: String },
+  parent_id: { type: Number },
   to: {
     pathname: { type: String },
     state: {

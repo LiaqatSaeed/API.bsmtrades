@@ -17,7 +17,7 @@ import User from '../Model/User';
 
 require('dotenv').config();
 
-const { DEFAULT } = process.env;
+const { DEFAULT, ACCOUNT_ID } = process.env;
 
 //import { minifySVG } from "../compress";
 router.use(DBConnection, authError);
@@ -203,6 +203,8 @@ const getUserPermissions = async (req, res) => {
     response.token = await getJwtoken({
       userData: { _id, role, permission_id, active_until },
     });
+    const accountPAges = await Pages.find({ parent_id: ACCOUNT_ID });
+    response.pages = map(accountPAges,({_doc})=> _doc);
     response.permissions = [{ pages:pages }];
     res.json(response);
   } catch (error) {

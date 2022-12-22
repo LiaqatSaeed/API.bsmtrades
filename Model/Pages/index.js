@@ -15,6 +15,7 @@ const pages = new Schema({
     pathname: { type: String },
     state: {
       account: { type: String },
+      accountURL: { type: String },
     }
   },
 });

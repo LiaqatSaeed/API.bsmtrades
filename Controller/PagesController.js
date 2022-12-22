@@ -11,6 +11,10 @@ import {
 import Pages from '../Model/Pages';
 import map from 'lodash/map';
 
+require('dotenv').config();
+
+const { ACCOUNT_ID } = process.env;
+
 router.use(authenticate, DBConnection, authError);
 router.use(removeEmpty);
 
@@ -50,7 +54,7 @@ var routes = () => {
 
       query = {
         ...query,
-        parent_id:8
+        parent_id: ACCOUNT_ID
       }
 
 

@@ -10,8 +10,11 @@ import trim from 'lodash/trim';
 import { manageHistory, recordHistory } from '../Business';
 import { authError, DBConnection, mongoose, removeEmpty } from '../middleware';
 import LiveBalance from '../Model/LiveBalances';
-import accounts from '../Constants/accounts.json';
+import Pages from '../Model/Pages';
 import { isNaN, sortBy } from 'lodash';
+require('dotenv').config();
+
+const { ACCOUNT_ID } = process.env;
 
 router.use(DBConnection, authError);
 router.use(removeEmpty);
@@ -90,6 +93,8 @@ var routes = () => {
     try {
       let { query } = req;
       let dbQuery = query;
+      let accounts = await Pages.find({ parent_id: ACCOUNT_ID });
+      accounts = map(accounts, ({ _doc }) => _doc);
 
       let today = new Date();
 
@@ -105,10 +110,9 @@ var routes = () => {
       if (dbQuery.account === 'all') {
         dbQuery = {};
       } else {
-        const { account } = find(
-          accounts,
-          (item) => item.url === dbQuery.account
-        );
+        const { value: account } = find(accounts, (item) => {
+          return item.to.state.accountURL === dbQuery.account;
+        });
         dbQuery = { account };
       }
 
@@ -123,11 +127,11 @@ var routes = () => {
         live_balances = map(live_balances, (item) => {
           const account = find(
             accounts,
-            (accountItem) => accountItem.account === item.account
+            (accountItem) => accountItem.to.state.account === item.account
           );
           return {
             ...item._doc,
-            account_name: account.name,
+            account_name: account.label,
           };
         });
 
@@ -154,7 +158,7 @@ var routes = () => {
         }
 
         live_balances = map(live_balances, (item) => {
-          let account =   parseInt(item.account);
+          let account = parseInt(item.account);
           account = isNaN(account) ? -1 : account;
           return {
             ...item,
